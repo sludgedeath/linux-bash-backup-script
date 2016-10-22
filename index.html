@@ -1,43 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
+    <meta charset="UTF-8">
     <title>Linux-bash-backup-script by sludgedeath</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">Linux-bash-backup-script</h1>
+      <h2 class="project-tagline">linux bash backup script</h2>
+      <a href="https://github.com/sludgedeath/linux-bash-backup-script" class="btn">View on GitHub</a>
+      <a href="https://github.com/sludgedeath/linux-bash-backup-script/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/sludgedeath/linux-bash-backup-script/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <header>
-      <div class="container">
-        <h1>Linux-bash-backup-script</h1>
-        <h2>linux bash backup script</h2>
-
-        <section id="downloads">
-          <a href="https://github.com/sludgedeath/linux-bash-backup-script/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/sludgedeath/linux-bash-backup-script/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/sludgedeath/linux-bash-backup-script" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
-
-    <div class="container">
-      <section id="main_content">
-        <h1>
+    <section class="main-content">
+      <h1>
 <a id="linux-bash-backup-script" class="anchor" href="#linux-bash-backup-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>linux-bash-backup-script</h1>
 
-<p>bash linux backup script</p>
+<p><strong>Incremental and rotating linux bash backup script</strong></p>
 
-<pre><code>chmod +x install.sh &amp;&amp; ./install.sh
-</code></pre>
-      </section>
-    </div>
+<p>Keeps original folder structure and does not overwrite unchanged files.
+No compression.</p>
 
-    
+<hr>
+
+<p><strong>Setup</strong></p>
+
+<ul>
+<li>edit <code>DAYS</code>, <code>TARGET</code> and <code>SOURCE</code> in bash.sh </li>
+<li>edit <code>crontab parameters</code> in install.sh</li>
+<li><code>chmod +x install.sh &amp;&amp; ./install.sh</code></li>
+</ul>
+
+<hr>
+
+<p><strong>bash.sh</strong></p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-c">#!/bin/bash</span>
+DAYS=7
+
+TARGET=<span class="pl-s"><span class="pl-pds">'</span>/media/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span><span class="pl-s"><span class="pl-pds">'</span>/Backup<span class="pl-pds">'</span></span>
+
+SOURCE=(
+    <span class="pl-s"><span class="pl-pds">'</span>/home/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span><span class="pl-s"><span class="pl-pds">'</span>/porn<span class="pl-pds">'</span></span>
+    <span class="pl-s"><span class="pl-pds">'</span>/home/share/database<span class="pl-pds">'</span></span>
+)
+
+
+<span class="pl-c">##############################################################################################</span>
+<span class="pl-c">#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#\/#</span>
+<span class="pl-c">##############################################################################################</span>
+
+
+<span class="pl-k">if</span> [ <span class="pl-k">!</span> <span class="pl-k">-d</span> <span class="pl-smi">$TARGET</span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+    logger <span class="pl-s"><span class="pl-pds">"</span>backup storage medium not found:<span class="pl-pds">"</span></span> <span class="pl-smi">$TARGET</span> 
+    <span class="pl-c1">exit</span>
+<span class="pl-k">fi</span>
+
+
+<span class="pl-en">copy_</span> () {
+    fil=<span class="pl-smi">$1</span>
+    tstamp=<span class="pl-s"><span class="pl-pds">$(</span>stat <span class="pl-smi">$fil</span> -c %y <span class="pl-k">|</span> cut -d <span class="pl-s"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span> -f1 <span class="pl-k">|</span>  sed -e  <span class="pl-s"><span class="pl-pds">'</span>s/-//g; s/://; s/\ //g; s/:/\./<span class="pl-pds">'</span></span><span class="pl-pds">)</span></span>
+    cp <span class="pl-smi">$file</span> <span class="pl-smi">$TARGET$fil</span>
+    touch -mt <span class="pl-smi">$tstamp</span> <span class="pl-smi">$TARGET$fil</span>
+}
+
+logger <span class="pl-s"><span class="pl-pds">"</span>backup is backing up files now:<span class="pl-pds">"</span></span> <span class="pl-smi">$TARGET</span> 
+<span class="pl-c">#rm unneeded dates</span>
+folders_count=<span class="pl-s"><span class="pl-pds">$(</span>ls <span class="pl-smi">$TARGET</span> <span class="pl-k">|</span> wc -l<span class="pl-pds">)</span></span>
+<span class="pl-k">if</span> <span class="pl-s"><span class="pl-pds">((</span> <span class="pl-smi">$folders_count</span> <span class="pl-k">&gt;</span> <span class="pl-smi">$DAYS</span> <span class="pl-pds">))</span></span><span class="pl-k">;</span> <span class="pl-k">then</span>
+    <span class="pl-k">for</span> <span class="pl-smi">rm_folder</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">$(</span>ls <span class="pl-smi">$TARGET</span> -t <span class="pl-k">|</span> tail -n <span class="pl-s"><span class="pl-pds">$((</span> <span class="pl-smi">$folders_count</span> <span class="pl-k">-</span> <span class="pl-smi">$DAYS</span> <span class="pl-pds">))</span></span> <span class="pl-pds">)</span></span><span class="pl-k">;</span><span class="pl-k">do</span>
+        rm -r <span class="pl-smi">$TARGET</span><span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span><span class="pl-smi">$rm_folder</span>
+    <span class="pl-k">done</span>
+<span class="pl-k">fi</span>
+
+<span class="pl-c">#mk todays dir</span>
+dir_=<span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">$(</span>date +<span class="pl-s"><span class="pl-pds">"</span>%d-%m-%y<span class="pl-pds">"</span></span><span class="pl-pds">)</span></span>
+<span class="pl-k">if</span> [ <span class="pl-k">!</span> <span class="pl-k">-d</span> <span class="pl-smi">$dir_</span> ]<span class="pl-k">;</span><span class="pl-k">then</span>
+    mkdir -p <span class="pl-smi">$TARGET$dir_</span>
+<span class="pl-k">fi</span>
+
+
+TARGET=<span class="pl-smi">$TARGET$dir_</span>
+
+<span class="pl-c">#rm files from Backup</span>
+<span class="pl-k">for</span> <span class="pl-smi">files</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">$(</span>find <span class="pl-smi">$TARGET</span> -type f<span class="pl-pds">)</span></span><span class="pl-k">;</span><span class="pl-k">do</span>
+    sourcefile=<span class="pl-s"><span class="pl-pds">$(</span><span class="pl-c1">echo</span> <span class="pl-smi">$files</span><span class="pl-k">|</span>sed <span class="pl-s"><span class="pl-pds">'</span>s|<span class="pl-pds">'</span></span><span class="pl-smi">$TARGET</span><span class="pl-s"><span class="pl-pds">'</span>||<span class="pl-pds">'</span></span>g <span class="pl-pds">)</span></span>
+    <span class="pl-k">if</span> [ <span class="pl-k">!</span> <span class="pl-k">-f</span> <span class="pl-smi">$sourcefile</span> ] <span class="pl-k">;</span><span class="pl-k">then</span>
+        rm <span class="pl-smi">$TARGET$sourcefile</span>
+    <span class="pl-k">fi</span>
+<span class="pl-k">done</span>
+<span class="pl-c">#rm dirs from Backup</span>
+<span class="pl-k">for</span> <span class="pl-smi">dir</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">$(</span>find <span class="pl-smi">$TARGET</span> -type d<span class="pl-pds">)</span></span><span class="pl-k">;</span><span class="pl-k">do</span>
+    sourcefile=<span class="pl-s"><span class="pl-pds">$(</span><span class="pl-c1">echo</span> <span class="pl-smi">$dir</span><span class="pl-k">|</span>sed <span class="pl-s"><span class="pl-pds">'</span>s|<span class="pl-pds">'</span></span><span class="pl-smi">$TARGET</span><span class="pl-s"><span class="pl-pds">'</span>||<span class="pl-pds">'</span></span>g <span class="pl-pds">)</span></span>
+    <span class="pl-k">if</span> [ <span class="pl-k">!</span> <span class="pl-k">-d</span> <span class="pl-smi">$sourcefile</span> ] <span class="pl-k">;</span><span class="pl-k">then</span>
+        rm -r <span class="pl-smi">$TARGET$sourcefile</span>
+    <span class="pl-k">fi</span>
+<span class="pl-k">done</span>
+
+<span class="pl-k">for</span> <span class="pl-smi">files</span> <span class="pl-k">in</span> <span class="pl-smi">${SOURCE[@]}</span><span class="pl-k">;</span> <span class="pl-k">do</span>
+    <span class="pl-c">#mkdirs on Backup</span>
+    <span class="pl-k">for</span> <span class="pl-smi">dir</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">$(</span>find <span class="pl-smi">$files</span> -type d<span class="pl-pds">)</span></span><span class="pl-k">;</span> <span class="pl-k">do</span>
+        <span class="pl-k">if</span> [ <span class="pl-k">!</span> <span class="pl-k">-d</span> <span class="pl-smi">$TARGET$dir</span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+            mkdir -p <span class="pl-smi">$TARGET$dir</span>
+        <span class="pl-k">fi</span>
+    <span class="pl-k">done</span>
+    <span class="pl-c">#file operations</span>
+    <span class="pl-k">for</span> <span class="pl-smi">file</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">$(</span>find <span class="pl-smi">$files</span> -type f<span class="pl-pds">)</span></span><span class="pl-k">;</span> <span class="pl-k">do</span>
+        <span class="pl-k">if</span> [ <span class="pl-k">!</span> <span class="pl-k">-f</span> <span class="pl-smi">$TARGET$file</span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+            copy_ <span class="pl-smi">$file</span>     
+        <span class="pl-k">else</span>
+            lm_o=<span class="pl-s"><span class="pl-pds">$(</span>stat <span class="pl-smi">$file</span> -c %Y<span class="pl-pds">)</span></span>
+            lm_b=<span class="pl-s"><span class="pl-pds">$(</span>stat <span class="pl-smi">$TARGET$file</span> -c %Y<span class="pl-pds">)</span></span>
+            <span class="pl-k">if</span> [ <span class="pl-smi">$lm_o</span> <span class="pl-k">!=</span> <span class="pl-smi">$lm_b</span> ]<span class="pl-k">;</span><span class="pl-k">then</span>
+                copy_ <span class="pl-smi">$file</span>
+            <span class="pl-k">fi</span>
+        <span class="pl-k">fi</span> 
+    <span class="pl-k">done</span>
+<span class="pl-k">done</span>
+</pre></div>
+
+<p><strong>install.sh</strong></p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-c">#!/bin/sh</span>
+
+mkdir -p <span class="pl-s"><span class="pl-pds">'</span>/home/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span><span class="pl-s"><span class="pl-pds">'</span>/.backup<span class="pl-pds">'</span></span> 
+cp <span class="pl-s"><span class="pl-pds">'</span>backup.sh<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>/home/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span><span class="pl-s"><span class="pl-pds">'</span>/.backup<span class="pl-pds">'</span></span> 
+chmod +x <span class="pl-s"><span class="pl-pds">'</span>/home/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span><span class="pl-s"><span class="pl-pds">'</span>/.backup/backup.sh<span class="pl-pds">'</span></span>
+
+
+crontab -l <span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>/tmp/ccron<span class="pl-pds">'</span></span>
+<span class="pl-k">if</span> grep -q <span class="pl-s"><span class="pl-pds">"</span>#backup<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>/tmp/ccron<span class="pl-pds">"</span></span><span class="pl-k">;</span><span class="pl-k">then</span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>#backup cron job exists<span class="pl-pds">"</span></span>
+<span class="pl-k">else</span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>adding new cron job<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>55 0-23/2 * * * /home/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span><span class="pl-s"><span class="pl-pds">'</span>/.backup/backup.sh #backup<span class="pl-pds">'</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>/tmp/ccron<span class="pl-pds">'</span></span>
+    crontab <span class="pl-s"><span class="pl-pds">'</span>/tmp/ccron<span class="pl-pds">'</span></span>
+<span class="pl-k">fi</span>
+
+rm <span class="pl-s"><span class="pl-pds">'</span>/tmp/ccron<span class="pl-pds">'</span></span></pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/sludgedeath/linux-bash-backup-script">Linux-bash-backup-script</a> is maintained by <a href="https://github.com/sludgedeath">sludgedeath</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
   </body>
 </html>
