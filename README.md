@@ -12,3 +12,5 @@ Setup:
 
 * `chmod +x install.sh && ./install.sh`
 
+Check out the website
+https://sludgedeath.github.io/linux-bash-backup-script/
