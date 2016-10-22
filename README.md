@@ -1,6 +1,7 @@
 # linux-bash-backup-script
 
 Incremental and rotating linux bash backup script
+
 Keeps original folder structure and does not overwrite unchanged files. No compression.
 
 Setup:
