@@ -6,7 +6,7 @@ Keeps original folder structure and does not overwrite unchanged files. No compr
 
 Setup:
 
-edit DAYS, TARGET and SOURCE in bash.sh
+* edit DAYS, TARGET and SOURCE in bash.sh
 
 edit crontab parameters in install.sh
 
