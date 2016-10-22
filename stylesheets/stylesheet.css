@@ -57,7 +57,9 @@ a {
   color: #fff;
   text-align: center;
   background-color: #159957;
-  background-image: linear-gradient(120deg, #155799, #159957); }
+  //background-image: linear-gradient(120deg, #155799, #159957); }
+  background-image:url('http://cdn.makeuseof.com/wp-content/uploads/2014/07/hard-drive-lifespan-physical-damage.jpg?32bb66')
+
 
 @media screen and (min-width: 64em) {
   .page-header {
