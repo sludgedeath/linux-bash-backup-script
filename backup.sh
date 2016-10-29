@@ -26,9 +26,7 @@ copy_ () {
 	touch -mt $tstamp "$target""$fil"
 }
 
-
 for TARGET in ${DESTINATION[@]} ; do
-
 
 	if [ ! -d "$TARGET" ]; then
 		logger "backup storage medium not found:" "$TARGET" 
