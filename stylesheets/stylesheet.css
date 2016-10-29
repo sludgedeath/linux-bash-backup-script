@@ -18,8 +18,8 @@ a {
 .btn {
   display: inline-block;
   margin-bottom: 1rem;
-  color: #606c71;
-  background-color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.2);
   border-style: solid;
   border-width: 1px;
@@ -29,8 +29,9 @@ a {
     margin-left: 1rem; }
 
 .btn:hover {
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.3); }
 
 @media screen and (min-width: 64em) {
@@ -56,9 +57,7 @@ a {
   color: #fff;
   text-align: center;
   background-color: #159957;
-  /* background-image: linear-gradient(120deg, #155799, #159957); */
-  background-image:url('http://courtneysoftware.com/wp-content/uploads/Burning-Hard-Drive-1.jpg')
-}
+  background-image: linear-gradient(120deg, #155799, #159957); }
 
 @media screen and (min-width: 64em) {
   .page-header {
@@ -113,7 +112,7 @@ a {
   margin-top: 2rem;
   margin-bottom: 1rem;
   font-weight: normal;
-  color: #cc6600; }
+  color: #159957; }
 .main-content p {
   margin-bottom: 1em; }
 .main-content code {
