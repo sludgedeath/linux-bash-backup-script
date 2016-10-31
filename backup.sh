@@ -3,10 +3,11 @@ DAYS=7
 
 DESTINATION=(
 	'/media/'"$(whoami)"'/Backup'
+	'/media/'"$(whoami)"'/Backup_king'
 )
 
 SOURCE=(
-	'/home/'"$(whoami)"'/porn'
+	'/home/'"$(whoami)"'/dev'
 	'/home/share/database'
 	'/home/share/txt'
 	'/home/share/web'
@@ -26,7 +27,9 @@ copy_ () {
 	touch -mt $tstamp "$target""$fil"
 }
 
+
 for TARGET in ${DESTINATION[@]} ; do
+
 
 	if [ ! -d "$TARGET" ]; then
 		logger "backup storage medium not found:" "$TARGET" 
@@ -40,7 +43,7 @@ for TARGET in ${DESTINATION[@]} ; do
 	folders_count=$(ls "$TARGET" | wc -l)
 	if (( $folders_count > $DAYS )); then
 		for rm_folder in $(ls "$TARGET" -t | tail -n $(( $folders_count - $DAYS )) );do
-			rm -r $"TARGET"'/'"$rm_folder"
+			rm -r "$TARGET"'/'"$rm_folder"
 		done
 	fi
 
