@@ -2,8 +2,7 @@
 
 **Incremental and rotating linux bash backup script**
 
-Keeps original folder structure and does not overwrite unchanged files. No compression.
-
+Incremental and rotating linux bash backup script which keeps original folder structure and does not overwrite unchanged files. Supports multiple backup destinations and filenames containing whitespaces and non-alphanumeric characters. Uses no compression.
 Setup:
 
 * edit `DAYS`, `TARGET` and `SOURCE` in bash.sh
