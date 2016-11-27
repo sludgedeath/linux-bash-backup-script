@@ -41,10 +41,9 @@ Uses no compression.</p>
 <p><strong>backup.sh</strong></p>
 
 <div class="highlight highlight-source-shell"><pre><span class="pl-c">#!/bin/bash</span>
-DAYS=7
+DAYS=3
 
 DESTINATION=(
-    <span class="pl-s"><span class="pl-pds">'</span>/media/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span><span class="pl-s"><span class="pl-pds">'</span>/Backup<span class="pl-pds">'</span></span>
     <span class="pl-s"><span class="pl-pds">'</span>/media/<span class="pl-pds">'</span></span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span><span class="pl-s"><span class="pl-pds">'</span>/Backup_king<span class="pl-pds">'</span></span>
 )
 
@@ -126,7 +125,7 @@ SOURCE=(
             <span class="pl-k">else</span>
                 lm_o=<span class="pl-s"><span class="pl-pds">$(</span>stat <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$file</span><span class="pl-pds">"</span></span> -c %Y<span class="pl-pds">)</span></span>
                 lm_b=<span class="pl-s"><span class="pl-pds">$(</span>stat <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$TARGET</span><span class="pl-pds">"</span><span class="pl-pds">"</span><span class="pl-smi">$file</span><span class="pl-pds">"</span></span> -c %Y<span class="pl-pds">)</span></span>
-                <span class="pl-k">if</span> [ <span class="pl-smi">$lm_o</span> <span class="pl-k">!=</span> <span class="pl-smi">$lm_b</span> ]<span class="pl-k">;</span><span class="pl-k">then</span>
+                <span class="pl-k">if</span> [ <span class="pl-smi">$lm_o</span> <span class="pl-k">!=</span> <span class="pl-smi">$lm_b</span> ] <span class="pl-k">&amp;&amp;</span> [ <span class="pl-smi">$lm_o</span> <span class="pl-k">!=</span> <span class="pl-s"><span class="pl-pds">$((</span> <span class="pl-smi">$lm_b</span> <span class="pl-k">+</span> <span class="pl-c1">1</span> <span class="pl-pds">))</span></span> ] <span class="pl-k">&amp;&amp;</span> [ <span class="pl-smi">$lm_o</span> <span class="pl-k">!=</span> <span class="pl-s"><span class="pl-pds">$((</span> <span class="pl-smi">$lm_b</span> <span class="pl-k">+</span> <span class="pl-c1">2</span> <span class="pl-pds">))</span></span> ]<span class="pl-k">;</span><span class="pl-k">then</span>
                     copy_ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$file</span><span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$TARGET</span><span class="pl-pds">"</span></span>
                 <span class="pl-k">fi</span>
             <span class="pl-k">fi</span> 
