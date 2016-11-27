@@ -1,8 +1,7 @@
 #!/bin/bash
-DAYS=7
+DAYS=3
 
 DESTINATION=(
-	'/media/'"$(whoami)"'/Backup'
 	'/media/'"$(whoami)"'/Backup_king'
 )
 
@@ -84,7 +83,7 @@ for TARGET in ${DESTINATION[@]} ; do
 			else
 				lm_o=$(stat "$file" -c %Y)
 				lm_b=$(stat "$TARGET""$file" -c %Y)
-				if [ $lm_o != $lm_b ];then
+				if [ $lm_o != $lm_b ] && [ $lm_o != $(( $lm_b + 1 )) ] && [ $lm_o != $(( $lm_b + 2 )) ];then
 					copy_ "$file" "$TARGET"
 				fi
 			fi 
